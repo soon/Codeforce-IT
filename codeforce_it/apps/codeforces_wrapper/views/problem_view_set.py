@@ -1,5 +1,7 @@
 from rest_framework import viewsets
 
+from codeforce_it.apps.codeforces_wrapper.models import Problem
+
 from codeforce_it.apps.codeforces_wrapper.serializers import ProblemSerializer
 
 
