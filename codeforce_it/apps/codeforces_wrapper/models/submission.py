@@ -1,6 +1,7 @@
 from django.db import models
-from codeforce_it.apps.codeforces_wrapper.models import Problem, Contestant
 from django.utils.translation import ugettext_lazy as _
+
+from codeforce_it.apps.codeforces_wrapper.models import Problem, Contestant
 
 
 __author__ = 'Andrew Kuchev (kuchevad@gmail.com)'
