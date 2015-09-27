@@ -44,7 +44,7 @@ THIRD_PARTY_APPS = (
 )
 
 PROJECT_APPS = (
-
+    'codeforce_it.apps.codeforces_wrapper',
 )
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
