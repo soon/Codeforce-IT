@@ -11,3 +11,7 @@ class Contest(models.Model):
     start_time = models.DateTimeField(_('Start time'))
     duration = models.DurationField(_('Duration'))
     contestants = models.ManyToManyField(Contestant, blank=True)
+
+    @property
+    def end_time(self):
+        return self.start_time + self.duration
