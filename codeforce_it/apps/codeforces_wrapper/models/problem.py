@@ -13,6 +13,9 @@ class Problem(models.Model):
     max_score = models.FloatField(verbose_name=_('Maximum amount of points'))
     contest = models.ForeignKey(Contest, null=True)
 
+    class Meta:
+        app_label = 'codeforces_wrapper'
+
     @property
     def codeforces_url(self):
         return 'http://codeforces.com/problemset/problem/{}/{}'.format(self.cf_contest_id, self.cf_index)

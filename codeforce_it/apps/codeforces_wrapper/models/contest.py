@@ -12,6 +12,9 @@ class Contest(models.Model):
     duration = models.DurationField(_('Duration'))
     contestants = models.ManyToManyField(Contestant, blank=True)
 
+    class Meta:
+        app_label = 'codeforces_wrapper'
+
     def __str__(self):
         return "#{}, starts at {}, ends at {}".format(self.id, self.start_time, self.end_time)
 

@@ -51,3 +51,6 @@ class Submission(models.Model):
     author = models.ForeignKey(Contestant)
     creation_time = models.DateTimeField(verbose_name=_('Creation time'))
     verdict = models.CharField(verbose_name=_('Verdict'), choices=VERDICT_CHOICES, max_length=3)
+
+    class Meta:
+        app_label = 'codeforces_wrapper'
