@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models import F
+from django.template.defaulttags import now
 from django.utils.translation import ugettext_lazy as _
 
 from codeforce_it.apps.codeforces_wrapper.models import Contestant
@@ -21,3 +23,7 @@ class Contest(models.Model):
     @property
     def end_time(self):
         return self.start_time + self.duration
+
+    @staticmethod
+    def get_running_contests():
+        return Contest.objects.filter(start_time__lte=now(), start_time__gte=now() - F('duration'))
