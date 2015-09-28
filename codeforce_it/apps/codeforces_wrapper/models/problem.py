@@ -15,6 +15,7 @@ class Problem(models.Model):
 
     class Meta:
         app_label = 'codeforces_wrapper'
+        unique_together = ('cf_contest_id', 'cf_index', 'contest')
 
     @property
     def codeforces_url(self):
