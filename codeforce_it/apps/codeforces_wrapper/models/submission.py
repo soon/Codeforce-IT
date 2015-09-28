@@ -46,7 +46,7 @@ class Submission(models.Model):
         (VERDICT_REJECTED, _('Rejected')),
     )
 
-    cf_id = models.IntegerField(verbose_name=_('Codeforces Id'))
+    cf_id = models.IntegerField(verbose_name=_('Codeforces Id'), unique=True)
     problem = models.ForeignKey(Problem)
     author = models.ForeignKey(Contestant)
     creation_time = models.DateTimeField(verbose_name=_('Creation time'))
