@@ -7,3 +7,10 @@ __author__ = 'Andrew Kuchev (kuchevad@gmail.com)'
 
 class Contestant(models.Model):
     cf_handle = models.CharField(verbose_name=_('Codeforces Handle'), max_length=64)
+
+    def __str__(self):
+        return self.cf_handle
+
+    @property
+    def codeforces_url(self):
+        return 'http://codeforces.com/profile/{}'.format(self.cf_handle)

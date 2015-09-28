@@ -9,4 +9,5 @@ __author__ = 'Andrew Kuchev (kuchevad@gmail.com)'
 class ContestantSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Contestant
-        fields = ('cf_handle',)
+        fields = ('cf_handle', 'codeforces_url')
+        read_only_fields = ('codeforces_url',)
