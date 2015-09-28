@@ -9,5 +9,5 @@ __author__ = 'Andrew Kuchev (kuchevad@gmail.com)'
 class ContestSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Contest
-        fields = ('start_time', 'duration', 'contestants', 'end_time')
+        fields = ('url', 'start_time', 'duration', 'contestants', 'end_time')
         read_only_fields = ('end_time',)
