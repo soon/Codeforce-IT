@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models import F
-from django.template.defaulttags import now
+from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 
 from codeforce_it.apps.codeforces_wrapper.models import Contestant
