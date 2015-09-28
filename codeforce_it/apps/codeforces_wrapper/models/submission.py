@@ -1,3 +1,5 @@
+from codeforces import VerdictType
+
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -54,3 +56,36 @@ class Submission(models.Model):
 
     class Meta:
         app_label = 'codeforces_wrapper'
+
+    @staticmethod
+    def from_cf_submission(cf_submission, problem, author):
+        assert cf_submission.problem.contest_id == problem.cf_contest_id
+        assert cf_submission.problem.index == problem.cf_index
+        assert len(cf_submission.author.members) == 1
+        assert cf_submission.author.members[0].handle == author.cf_handle
+
+        return Submission(cf_id=cf_submission.id, problem=problem, author=author,
+                          creation_time=cf_submission.creation_time,
+                          verdict=Submission.parse_cf_verdict(cf_submission.verdict))
+
+    @staticmethod
+    def parse_cf_verdict(verdict_type):
+        return {
+            VerdictType.failed: Submission.VERDICT_FAILED,
+            VerdictType.ok: Submission.VERDICT_OK,
+            VerdictType.partial: Submission.VERDICT_PARTIAL,
+            VerdictType.compilation_error: Submission.VERDICT_COMPILATION_ERROR,
+            VerdictType.runtime_error: Submission.VERDICT_RUNTIME_ERROR,
+            VerdictType.wrong_answer: Submission.VERDICT_WRONG_ANSWER,
+            VerdictType.presentation_error: Submission.VERDICT_PRESENTATION_ERROR,
+            VerdictType.time_limit_exceeded: Submission.VERDICT_TIME_LIMIT_EXCEEDED,
+            VerdictType.memory_limit_exceeded: Submission.VERDICT_MEMORY_LIMIT_EXCEEDED,
+            VerdictType.idleness_limit_exceeded: Submission.VERDICT_IDLENESS_LIMIT_EXCEEDED,
+            VerdictType.security_violated: Submission.VERDICT_SECURITY_VIOLATED,
+            VerdictType.crashed: Submission.VERDICT_CRASHED,
+            VerdictType.input_preparation_crashed: Submission.VERDICT_INPUT_PREPARATION_CRASHED,
+            VerdictType.challenged: Submission.VERDICT_CHALLENGED,
+            VerdictType.skipped: Submission.VERDICT_SKIPPED,
+            VerdictType.testing: Submission.VERDICT_TESTING,
+            VerdictType.rejected: Submission.VERDICT_REJECTED
+        }[verdict_type]
