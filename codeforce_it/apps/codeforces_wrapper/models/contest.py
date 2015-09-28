@@ -12,6 +12,9 @@ class Contest(models.Model):
     duration = models.DurationField(_('Duration'))
     contestants = models.ManyToManyField(Contestant, blank=True)
 
+    def __str__(self):
+        return "#{}, starts at {}, ends at {}".format(self.id, self.start_time, self.end_time)
+
     @property
     def end_time(self):
         return self.start_time + self.duration
