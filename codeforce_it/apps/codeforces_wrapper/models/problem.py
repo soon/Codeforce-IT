@@ -12,3 +12,7 @@ class Problem(models.Model):
     cf_index = models.CharField(verbose_name=_('Codeforces problem index'), max_length=16)
     max_score = models.FloatField(verbose_name=_('Maximum amount of points'))
     contest = models.ForeignKey(Contest, null=True)
+
+    @property
+    def codeforces_url(self):
+        return 'http://codeforces.com/problemset/problem/{}/{}'.format(self.cf_contest_id, self.cf_index)
