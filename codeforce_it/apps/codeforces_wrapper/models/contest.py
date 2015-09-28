@@ -10,4 +10,4 @@ __author__ = 'Andrew Kuchev (kuchevad@gmail.com)'
 class Contest(models.Model):
     start_time = models.DateTimeField(_('Start time'))
     duration = models.DurationField(_('Duration'))
-    contestants = models.ManyToManyField(Contestant)
+    contestants = models.ManyToManyField(Contestant, blank=True)
