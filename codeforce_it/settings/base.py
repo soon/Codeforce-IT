@@ -56,6 +56,10 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10
 }
 
+CRON_CLASSES = [
+    'codeforce_it.apps.codeforces_wrapper.cron_jobs.update_all_running_contests.UpdateAllRunningContests'
+]
+
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
