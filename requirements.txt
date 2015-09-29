@@ -8,3 +8,4 @@ Werkzeug>=0.10.4
 codeforces_api==0.2a0
 djangorestframework>=3.2
 django-cron>=0.4.3
+django-bootstrap3>=6.2.2
