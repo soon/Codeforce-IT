@@ -42,7 +42,8 @@ DJANGO_APPS = (
 THIRD_PARTY_APPS = (
     'django_extensions',
     'rest_framework',
-    'django_cron'
+    'django_cron',
+    'bootstrap3'
 )
 
 PROJECT_APPS = (
@@ -76,7 +77,9 @@ ROOT_URLCONF = 'codeforce_it.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates')
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -125,6 +128,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'apps', 'codeforces_wrapper', 'static'),
+)
 
 LOGGING = {
     'version': 1,
