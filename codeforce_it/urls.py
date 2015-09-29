@@ -11,6 +11,7 @@ router.register(r'problems', views.ProblemViewSet)
 router.register(r'contestants', views.ContestantViewSet)
 router.register(r'contests', views.ContestViewSet)
 router.register(r'submissions', views.SubmissionViewSet)
+router.register(r'cron-job-logs', views.CronJobLogViewSet)
 
 urlpatterns = [
     url(r'^', include(router.urls)),
