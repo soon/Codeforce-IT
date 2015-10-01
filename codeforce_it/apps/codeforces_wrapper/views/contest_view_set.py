@@ -5,8 +5,7 @@ from rest_framework.response import Response
 
 from codeforce_it.apps.codeforces_wrapper.internal.ranklist_row import RanklistRow
 from codeforce_it.apps.codeforces_wrapper.models import Contest
-from codeforce_it.apps.codeforces_wrapper.serializers import ContestSerializer
-from codeforce_it.apps.codeforces_wrapper.serializers.ranklist_row_serializer import RanklistRowSerializer
+from codeforce_it.apps.codeforces_wrapper.serializers import ContestSerializer, RanklistRowSerializer
 
 
 __author__ = 'Andrew Kuchev (kuchevad@gmail.com)'
