@@ -1,4 +1,5 @@
 from django.conf.urls import include, url
+from django.views.generic import TemplateView
 from rest_framework import routers
 
 from codeforce_it.apps.codeforces_wrapper import views
@@ -14,6 +15,8 @@ router.register(r'submissions', views.SubmissionViewSet)
 router.register(r'cron-job-logs', views.CronJobLogViewSet)
 
 urlpatterns = [
-    url(r'^', include(router.urls)),
+    url(r'^$', TemplateView.as_view(template_name='index.html')),
+    url(r'^contests/\d+$', TemplateView.as_view(template_name='contest_standings.html')),
+    url(r'^api/', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
