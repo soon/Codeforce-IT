@@ -24,6 +24,10 @@ class Contest(models.Model):
     def end_time(self):
         return self.start_time + self.duration
 
+    @property
+    def is_running(self):
+        return self.start_time <= now() <= self.end_time
+
     @staticmethod
     def get_running_contests():
         return Contest.objects.filter(start_time__lte=now(), start_time__gte=now() - F('duration'))
