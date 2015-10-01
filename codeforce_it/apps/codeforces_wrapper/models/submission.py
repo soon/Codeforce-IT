@@ -1,6 +1,8 @@
-from codeforces import VerdictType
+from datetime import datetime
 
+from codeforces import VerdictType
 from django.db import models
+from django.utils.timezone import make_aware, get_default_timezone
 from django.utils.translation import ugettext_lazy as _
 
 from codeforce_it.apps.codeforces_wrapper.models import Problem, Contestant
@@ -56,6 +58,7 @@ class Submission(models.Model):
 
     class Meta:
         app_label = 'codeforces_wrapper'
+        ordering = ['creation_time']
 
     @staticmethod
     def from_cf_submission(cf_submission, problem, author):
@@ -65,7 +68,8 @@ class Submission(models.Model):
         assert cf_submission.author.members[0].handle == author.cf_handle
 
         return Submission(cf_id=cf_submission.id, problem=problem, author=author,
-                          creation_time=cf_submission.creation_time,
+                          creation_time=make_aware(datetime.fromtimestamp(cf_submission.creation_time),
+                                                   get_default_timezone()),
                           verdict=Submission.parse_cf_verdict(cf_submission.verdict))
 
     @staticmethod

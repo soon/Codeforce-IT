@@ -1,8 +1,8 @@
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 from django.test import TestCase
 from codeforces import Submission
-from django.utils.timezone import now
+from django.utils.timezone import now, make_aware, get_default_timezone
 
 from codeforce_it.apps.codeforces_wrapper import models
 
@@ -30,4 +30,5 @@ class SubmissionTest(TestCase):
         self.assertEquals(submission.problem, problem)
         self.assertEquals(submission.author, author)
         self.assertEquals(submission.cf_id, 13004518)
-        self.assertEquals(submission.creation_time, 1442305802)
+        self.assertEquals(submission.creation_time, make_aware(datetime.fromtimestamp(cf_submission.creation_time),
+                                                               get_default_timezone()))
