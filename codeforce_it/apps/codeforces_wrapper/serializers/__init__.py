@@ -5,6 +5,7 @@ from .contestant_serializer import ContestantSerializer
 from .contest_serializer import ContestSerializer
 from .submission_serializer import SubmissionSerializer
 from .cron_job_log_serializer import CronJobLogSerializer
+from .problem_result_serializer import ProblemResultSerializer
 
 
 __author__ = 'Andrew Kuchev (kuchevad@gmail.com)'
