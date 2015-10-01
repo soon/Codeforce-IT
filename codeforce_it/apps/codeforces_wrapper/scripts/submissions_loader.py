@@ -1,5 +1,4 @@
 from itertools import groupby, chain
-import operator
 from datetime import datetime
 
 from codeforces import CodeforcesAPI, VerdictType
@@ -25,26 +24,30 @@ def retrieve_contest_submissions(contest):
                                 contest.contestants.all())))
 
 
-def store_only_new_submissions(submissions):
+def store_only_new_submissions(contest, submissions):
     if submissions:
         first_submission = min(submissions, key=lambda s: s.creation_time)
-        stored_submission_ids = set(map(operator.itemgetter('cf_id'),
-                                        Submission.objects.filter(creation_time__gte=first_submission.creation_time)))
+        first_submission_creation_time = make_aware(datetime.fromtimestamp(first_submission.creation_time),
+                                                    get_default_timezone())
+        stored_submission_ids = set(map(lambda s: s.cf_id,
+                                        Submission.objects.filter(creation_time__gte=first_submission_creation_time)))
         for submission in filter(lambda s: s.id not in stored_submission_ids, submissions):
-            Submission.from_json(submission).save()
+            problem = contest.problem_set.get(cf_contest_id=submission.problem.contest_id,
+                                              cf_index=submission.problem.index)
+            author = contest.contestants.get(cf_handle=submission.author.members[0].handle)
+            Submission.from_cf_submission(submission, problem, author).save()
 
 
 def load_submissions_to_db(contests):
-    for c in contests:
-        submissions = retrieve_contest_submissions(c)
-        store_only_new_submissions(submissions)
+    for contest in contests:
+        submissions = retrieve_contest_submissions(contest)
+        store_only_new_submissions(contest, submissions)
 
 
 def retrieve_contestant_submissions(contestant, contest, problem_indices_by_contest_id):
     api = CodeforcesAPI()
     return list(filter(lambda s: (make_aware(datetime.fromtimestamp(s.creation_time),
-                                             get_default_timezone()) >= make_aware(contest.start_time,
-                                                                                   get_default_timezone()) and
+                                             get_default_timezone()) >= contest.start_time and
                                   s.verdict != VerdictType.testing and
                                   s.problem.index in problem_indices_by_contest_id.get(s.problem.contest_id, [])),
                        api.user_status(contestant.cf_handle)))

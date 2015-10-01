@@ -3,9 +3,9 @@ from datetime import datetime
 from datetime import timedelta
 
 import codeforces
-
 from django.test import TestCase
 
+from codeforce_it.apps.codeforces_wrapper.models import Contest
 from codeforce_it.apps.codeforces_wrapper.scripts.submissions_loader import retrieve_contestant_submissions, \
     store_only_new_submissions, retrieve_contest_submissions
 from codeforce_it.apps.codeforces_wrapper import models
@@ -58,7 +58,7 @@ class SubmissionsLoaderTests(TestCase):
         self.assertEquals(3, len(submissions))
 
     def test_store_only_new_submissions__no_submissions(self):
-        store_only_new_submissions([])
+        store_only_new_submissions(Contest(), [])
 
     @mock.patch.object(codeforces.CodeforcesAPI, 'user_status')
     def test_retrieve_contest_submissions(self, mock_user_status):
