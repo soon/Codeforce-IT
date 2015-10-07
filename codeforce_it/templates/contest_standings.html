@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+
+{% block container %}
+    <div class="row">
+        <table class="table table-striped table-bordered" id="standings">
+            <caption>Contest standngs, started <span id="started"></span>, ends <span id="ends"></span></caption>
+            <thead>
+            <tr>
+                <th>Contestant</th>
+                <th>Score</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        String.format = function () {
+            var s = arguments[0];
+            for (var i = 0; i < arguments.length - 1; i++) {
+                var reg = new RegExp("\\{" + i + "\\}", "gm");
+                s = s.replace(reg, arguments[i + 1]);
+            }
+
+            return s;
+        };
+
+        function range(n) {
+            return Array.apply(null, new Array(n)).map(function (_, i) {
+                return i;
+            });
+        }
+
+        function getContestId() {
+            pathParts = window.location.pathname.split('/').filter(function (x) {
+                return x;
+            });
+            return pathParts[pathParts.length - 1]
+        }
+
+        function loadAndUpdateContestInfo() {
+            $.ajax({
+                type: 'GET',
+                url: '/api/contests/' + getContestId(),
+                success: function (contest) {
+                    console.log(contest);
+                    updateContestInfo(contest);
+                    console.log(contest);
+                },
+                error: function (xhr, errmsg, err) {
+                    console.log(xhr);
+                }
+            });
+        }
+
+        function updateProblemHeader(problem, problemHeader) {
+            problemHeader.text(problem.cf_contest_id + ': ' + problem.cf_index)
+        }
+
+        function loadAndUpdateProblemHeader(problemUrl, problemHeader) {
+            $.ajax({
+                type: 'GET',
+                url: problemUrl,
+                success: function (problem) {
+                    updateProblemHeader(problem, problemHeader);
+                    console.log(problem);
+                },
+                error: function (xhr, errmsg, err) {
+                    console.log(xhr);
+                }
+            });
+        }
+
+        function loadAndUpdateContestStandings() {
+            $.ajax({
+                type: 'GET',
+                url: '/api/contests/' + getContestId() + '/standings/',
+                success: function (ranklistRows) {
+                    console.log(ranklistRows);
+                    updateStandings(ranklistRows);
+                },
+                error: function (xhr, errmsg, err) {
+                    console.log(xhr);
+                }
+            });
+        }
+
+        function loadAndUpdateContestTime() {
+            $.ajax({
+                type: 'GET',
+                url: '/api/contests/' + getContestId(),
+                success: function (contest) {
+                    console.log(contest);
+                    updateContestTime(contest);
+                },
+                error: function (xhr, errmsg, err) {
+                    console.log(xhr);
+                }
+            });
+        }
+
+        function updateStandings(ranklistRows) {
+            $('#standings').find('tbody').empty().append(createTableRanklistRows(ranklistRows));
+        }
+
+        function createTableRanklistRows(ranklistRows) {
+            return ranklistRows.map(createTableRanklistRow);
+        }
+
+        function createTableRanklistRow(ranklistRow) {
+            row = '<tr>' + [ranklistRow['contestant'], ranklistRow['total_score']
+                    ].concat(ranklistRow['problem_results']).map(createCell).join('') + '</tr>';
+            return row;
+        }
+
+        function updateStandingsHeader(problems) {
+            for (i = 0; i < problems.length; i++) {
+                var problemHeader = $('<th></th>');
+                $('#standings').find('thead tr').append(problemHeader);
+                loadAndUpdateProblemHeader(problems[i], problemHeader);
+            }
+        }
+
+        function updateProblemSet(problems) {
+            updateStandingsHeader(problems)
+        }
+
+        function updateContestInfo(contest) {
+            updateProblemSet(contest.problem_set);
+            updateContestTime(contest);
+        }
+
+        function updateContestTime(contest) {
+            $("#started").text(moment(contest.start_time).fromNow());
+            $("#ends").text(moment(contest.end_time).fromNow());
+        }
+
+        (function () {
+            formatHeaderRow = function (x) {
+                return String.format.bind(null, getHeaderRowPattern(x));
+            };
+        })();
+
+        function getRowPattern(n) {
+            return '<tr>' + range(n).map(function (x) {
+                        return '<td>{' + x + '}</td>'
+                    })
+        }
+
+        function getHeaderRowPattern(n) {
+            return '<tr>' + range(n).map(function (x) {
+                        return '<th>{' + x + '}</th>'
+                    })
+        }
+
+        function prettifyProblemResults(problemResults) {
+            if (problemResults['points'] > 0 || parseInt(problemResults['rejected_attempt_count']) != 0) {
+                return String.format('{0} [{1}]', problemResults['points'], problemResults['rejected_attempt_count'])
+            }
+            else {
+                return '';
+            }
+        }
+
+        function createCell(value) {
+            if (value['points'] != undefined) {
+                return createProblemResultsCell(value);
+            } else if (value['cf_handle'] != undefined) {
+                return createContestantCell(value);
+            }
+            return createRegularCell(value);
+        }
+
+        function createContestantCell(contestant) {
+            return String.format('<td><a href="{0}">{1}</a></td>', contestant.codeforces_url, contestant.cf_handle)
+        }
+
+        function createRegularCell(value) {
+            return String.format('<td>{0}</td>', value);
+        }
+
+        function createProblemResultsCell(res) {
+            return String.format(
+                    '{0}{1}',
+                    createOpenTagForProblemCell(res),
+                    prettifyProblemResults(res));
+        }
+
+        function createOpenTagForProblemCell(res) {
+            rejected = parseInt(res['rejected_attempt_count']);
+            if (res['points'] > 0) {
+                return '<td class="success text-center">';
+            }
+            else if (rejected > 0) {
+                return '<td class="danger text-center">';
+            }
+            else {
+                return '<td class="text-center">';
+            }
+        }
+
+        loadAndUpdateContestInfo();
+        loadAndUpdateContestStandings();
+
+
+        (function () {
+            setInterval(loadAndUpdateContestStandings, 5000);
+        })();
+
+        (function () {
+            setInterval(loadAndUpdateContestTime, 5000);
+        })();
+    </script>
+{% endblock %}

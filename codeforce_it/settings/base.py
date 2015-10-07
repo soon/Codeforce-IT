@@ -41,13 +41,25 @@ DJANGO_APPS = (
 
 THIRD_PARTY_APPS = (
     'django_extensions',
+    'rest_framework',
+    'django_cron',
+    'bootstrap3'
 )
 
 PROJECT_APPS = (
-
+    'codeforce_it.apps.codeforces_wrapper',
 )
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAdminUser',),
+    'PAGE_SIZE': 10
+}
+
+CRON_CLASSES = [
+    'codeforce_it.apps.codeforces_wrapper.cron_jobs.update_all_running_contests.UpdateAllRunningContests'
+]
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -65,7 +77,9 @@ ROOT_URLCONF = 'codeforce_it.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates')
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -114,6 +128,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'apps', 'codeforces_wrapper', 'static'),
+)
 
 LOGGING = {
     'version': 1,

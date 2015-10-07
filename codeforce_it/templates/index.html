@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block container %}
+    <div class="row">
+        <table class="table table-striped table-bordered" id="contest-list">
+            <caption>Contests list</caption>
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Contestants</th>
+                <th>Start time</th>
+                <th>End time</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        String.format = function () {
+            var s = arguments[0];
+            for (var i = 0; i < arguments.length - 1; i++) {
+                var reg = new RegExp("\\{" + i + "\\}", "gm");
+                s = s.replace(reg, arguments[i + 1]);
+            }
+
+            return s;
+        };
+
+        function range(n) {
+            return Array.apply(null, new Array(n)).map(function (_, i) {
+                return i;
+            });
+        }
+
+        function loadAndUpdateContestList() {
+            $.ajax({
+                type: 'GET',
+                url: 'api/contests/',
+                success: function (msg) {
+                    console.log(msg);
+                    updateContestList(msg.results);
+                    console.log(msg);
+                },
+                error: function (xhr, errmsg, err) {
+                    console.log(xhr);
+                }
+            });
+        }
+
+        function updateContestList(contests) {
+            $('#contest-list').find('tbody').empty().append(createContestRows(contests))
+        }
+
+        function createContestRows(contests) {
+            return contests.map(createContestRow)
+        }
+
+        function createContestRow(contest) {
+            return '<tr>' + [contest.id, '???', contest.start_time, contest.end_time].map(createRegularCell).join('') + '</tr>';
+        }
+
+        function createRegularCell(value) {
+            return String.format('<td>{0}</td>', value);
+        }
+
+        (function () {
+            setInterval(loadAndUpdateContestList, 5000);
+        })();
+
+        loadAndUpdateContestList();
+    </script>
+{% endblock %}
