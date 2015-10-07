@@ -1,5 +1,6 @@
 from itertools import groupby, chain
 from datetime import datetime
+import time
 
 from codeforces import CodeforcesAPI, VerdictType
 from django.utils.timezone import make_aware, get_default_timezone
@@ -45,6 +46,7 @@ def load_submissions_to_db(contests):
 
 
 def retrieve_contestant_submissions(contestant, contest, problem_indices_by_contest_id):
+    time.sleep(1)
     api = CodeforcesAPI()
     return list(filter(lambda s: (make_aware(datetime.fromtimestamp(s.creation_time),
                                              get_default_timezone()) >= contest.start_time and

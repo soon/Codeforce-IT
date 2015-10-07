@@ -3,7 +3,10 @@
 {% block container %}
     <div class="row">
         <table class="table table-striped table-bordered" id="standings">
-            <caption>Contest standngs, started <span id="started"></span>, ends <span id="ends"></span></caption>
+            <caption>Contest standings, <span id="start_time"></span>,
+                <span id="starts_at_prefix"></span> <span id="starts_at"></span>,
+                <span id="ends_at_prefix"></span> <span id="ends_at"></span>
+            </caption>
             <thead>
             <tr>
                 <th>Contestant</th>
@@ -112,7 +115,7 @@
         }
 
         function createTableRanklistRow(ranklistRow) {
-            row = '<tr>' + [ranklistRow['contestant'], ranklistRow['total_score']
+            row = '<tr>' + [ranklistRow['contestant'], Math.round(ranklistRow['total_score'])
                     ].concat(ranklistRow['problem_results']).map(createCell).join('') + '</tr>';
             return row;
         }
@@ -135,8 +138,16 @@
         }
 
         function updateContestTime(contest) {
-            $("#started").text(moment(contest.start_time).fromNow());
-            $("#ends").text(moment(contest.end_time).fromNow());
+            var start_time = moment(contest.start_time);
+            var end_time = moment(contest.end_time);
+
+            $("#start_time").text(start_time);
+
+            $("#starts_at_prefix").text(start_time.isAfter() ? 'starts' : 'started');
+            $("#ends_at_prefix").text(end_time.isAfter() ? 'ends' : 'ended');
+
+            $("#starts_at").text(moment(contest.start_time).fromNow());
+            $("#ends_at").text(moment(contest.end_time).fromNow());
         }
 
         (function () {
@@ -159,7 +170,7 @@
 
         function prettifyProblemResults(problemResults) {
             if (problemResults['points'] > 0 || parseInt(problemResults['rejected_attempt_count']) != 0) {
-                return String.format('{0} [{1}]', problemResults['points'], problemResults['rejected_attempt_count'])
+                return String.format('{0} [{1}]', Math.round(problemResults['points']), problemResults['rejected_attempt_count'])
             }
             else {
                 return '';
